@@ -5,46 +5,41 @@
     <link href="style.css" rel="stylesheet" type="text/css">
   </head>
   <body>    
+    <!-- Grid Layout -->
     <div class="container">
-      <div class="item-chat" style="background-color: aqua"></div> 
-      <div class="item-users" style="background-color: rgb(255, 0, 0)"></div>
-      <div class="item-control" style="background-color: rgb(217, 255, 0)"></div>
-      <div class="item-input" style="background-color: rgb(28, 12, 247)"></div>
-    </div>
-            
-    <!--
-    <div id="onlinediv">
-      <header>Usuarios:</header>
-      <nav>
-        <ul id="online">            
-        </ul>  
-      </nav>    
-    </div>
-    <div id="controldiv">
-      <nav>                
-        <ul id="control">
-          <li>Control:</li>
-        </ul>
-      </nav>      
-    </div>
--->
-      <!-- Chat -->
-      <div id="messagesdiv">
+      <div class="item-chat">
         <nav>
-          <ul id="messages" style="height:100%""></ul>
-          <form action="" id="chat">
-            <input id="msg" autocomplete="off" /><button>Enviar</button>
-          </form>
-        <nav></nav>
+          <ul id="messages"></ul>          
+        </nav>
       </div>
-    
+      <div class="item-users">
+        <header>Usuarios:</header>
+        <nav>
+          <ul id="online"></ul>  
+        </nav>    
+      </div>
+      <div class="item-control">
+          <header>Control:</header>
+        <nav>                
+          <ul id="control"></ul>
+        </nav>      
+      </div>
+      <div class="item-input">
+        <form action="" id="chat">
+          <input id="msg" autocomplete="off" /><button>Enviar</button>
+        </form>
+      </div>
+    </div>               
 
     <!-- Modal Nick selector -->    
     <form action="" class="login_form modal" id="sticky" style="display:none;">
-        <h3>Por favor, selccione un login para iniciar la sesión:</h3>
-        <p><label>Nick:</label><input type="text" id="nick"/></p>          
+        <h3>Por favor, seleccione un Nick para iniciar la sesión:</h3>
+        <br/>
+        <p><label>Nick:</label><input type="text" id="nick" class="input-login"/></p>          
+        <br/>
         <p><input type="submit" value="Login"/></p>          
-        <p class="error" id="error_text"></p>
+        <br/>
+        <p class="error" id="error_text">&nbsp;</p>
         <a href="#" id="sticky_close" rel="modal:close" style="display:none;">Close</a>          
     </form>                
 
