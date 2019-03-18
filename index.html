@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>    
+    <div class="container">
+      <div class="item-chat" style="background-color: aqua"></div> 
+      <div class="item-users" style="background-color: rgb(255, 0, 0)"></div>
+      <div class="item-control" style="background-color: rgb(217, 255, 0)"></div>
+      <div class="item-input" style="background-color: rgb(28, 12, 247)"></div>
+    </div>
+            
+    <!--
+    <div id="onlinediv">
+      <header>Usuarios:</header>
+      <nav>
+        <ul id="online">            
+        </ul>  
+      </nav>    
+    </div>
+    <div id="controldiv">
+      <nav>                
+        <ul id="control">
+          <li>Control:</li>
+        </ul>
+      </nav>      
+    </div>
+-->
+      <!-- Chat -->
+      <div id="messagesdiv">
+        <nav>
+          <ul id="messages" style="height:100%""></ul>
+          <form action="" id="chat">
+            <input id="msg" autocomplete="off" /><button>Enviar</button>
+          </form>
+        <nav></nav>
+      </div>
+    
+
+    <!-- Modal Nick selector -->    
+    <form action="" class="login_form modal" id="sticky" style="display:none;">
+        <h3>Por favor, selccione un login para iniciar la sesión:</h3>
+        <p><label>Nick:</label><input type="text" id="nick"/></p>          
+        <p><input type="submit" value="Login"/></p>          
+        <p class="error" id="error_text"></p>
+        <a href="#" id="sticky_close" rel="modal:close" style="display:none;">Close</a>          
+    </form>                
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+    <!-- jQuery Modal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+    <script>
+      $(function () {
+        var socket = io();
+        // modal nick selector: sticky
+        $("#sticky").modal({
+          escapeClose: false,
+          clickClose: false,
+          showClose: false
+        });
+
+        // nick form
+        $('#sticky').submit(function(e){
+          e.preventDefault(); // prevents page reloading
+          var nick = $('#nick').val();
+          socket.emit('nick selector', nick);          
+          return false;
+        });
+
+        // received nick
+        socket.on('nick selector', function(msg){
+          if (msg == 'OK') {
+            console.log('nick = ' + msg)
+            $("#sticky_close").click();
+          }
+          else {
+            $('#error_text').text(msg);
+          }
+        });
+
+        // ----------------------------------------
+
+        // send message
+        $('#chat').submit(function(e){
+          e.preventDefault(); // prevents page reloading
+          var msg = $('#msg').val();
+          socket.emit('chat message', msg);
+          // my message
+          $('#messages').append($('<li>').addClass('mymessage').text(msg));
+          $('#msg').val('');
+          return false;
+        });
+
+        // received message
+        socket.on('chat message', function(msg){
+            $('#messages').append($('<li>').text(msg));
+        });
+
+
+
+        // ----------------------------------------
+
+        // received control message
+        socket.on('control', function(msgControl){
+            console.log(msgControl);
+            $('#control').append($('<li>').text(msgControl.control));
+        });
+
+
+        // ----------------------------------------
+
+        // user online message
+        socket.on('users', function(users){
+            console.log(users);
+            $('#online').empty();
+            Object.keys(users).forEach(function (id) {
+              if (users[id]) {
+                $('#online').append($('<li>').text(users[id].nick));
+              }
+            });              
+        });
+        
+        
+      });        
+    </script>   
+  </body>
+</html>

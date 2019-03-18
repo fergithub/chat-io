@@ -1,0 +1,52 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font: 13px Helvetica, Arial; }
+form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }        
+
+nav ul{height:250px;}
+nav ul{overflow:hidden; overflow-y:scroll;}
+
+#messagesdiv {position: absolute; top: 0; left: 0; width: 80%; height: 100%; border: 3px solid rgb(76, 114, 22); background-color:  powderblue; }
+#messages { list-style-type: none; margin: 0; padding: 0; }
+#messages li { padding: 5px 10px; }
+#messages li:nth-child(odd) { background: #eee; }              
+.mymessage { color: #ccc}   
+#messages li.mymessage { background: #500; }
+#messages li:nth-child(odd).mymessage { background: #900; }
+
+#controldiv {position: absolute; top: 0; right: 0; width: 20%; height: 250px; border: 3px solid rgb(76, 114, 22); background-color: rgb(0, 91, 196);}
+#control { list-style-type: none; margin: 0; padding: 0; background-color: rgb(0, 255, 192); border: black; border-style: solid; }        
+#control li { padding: 5px 10px; }
+#control li:nth-child(odd) { background: #990 }      
+
+#onlinediv {position: absolute; top: 300px; right: 0; width: 20%; height: 250px; border: 3px solid rgb(76, 114, 22); background-color:rgb(43, 95, 0); }
+#online { list-style-type: none; margin: 0; padding: 0; background-color: rgb(0, 255, 192); border: black; border-style: solid; }
+#online li { padding: 5px 10px; }
+
+
+
+.container {
+    grid-template-columns: auto 200px;
+    grid-template-rows: 200px auto 200px 40px;
+}
+
+.item-chat {
+    grid-column: 1 / 2;
+    grid-row: 1 / 4;
+}
+
+.item-users {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+}
+
+.item-control {
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
+}
+
+.item-input {
+    grid-column: 1 / 3;
+    grid-row: 4 / 5;
+}
