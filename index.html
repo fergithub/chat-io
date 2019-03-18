@@ -54,12 +54,33 @@
     <script>
       $(function () {
         var socket = io();
+        var input_text_old = "";
+
         // modal nick selector: sticky
         $("#sticky").modal({
           escapeClose: false,
           clickClose: false,
           showClose: false
         });
+
+        // user typing
+        $( "#msg" ).on("change keydown keyup paste", function() {
+          if ($('#msg').val()) {
+            if ($('#msg').val() != input_text_old) {
+              //DEBUG:console.log('typing...');
+              input_text_old = $('#msg').val();
+              socket.emit('user typing', 'YES');              
+            }
+          }
+          else {
+            //DEBUG:console.log('NO typing...');
+            input_text_old = "";
+            socket.emit('user typing', 'NO');
+          }          
+        });
+
+
+        // ----------------------------------------
 
         // nick form
         $('#sticky').submit(function(e){
@@ -72,7 +93,7 @@
         // received nick
         socket.on('nick selector', function(msg){
           if (msg == 'OK') {
-            console.log('nick = ' + msg)
+            //DEBUG:console.log('nick = ' + msg)
             $("#sticky_close").click();
           }
           else {
@@ -104,7 +125,7 @@
 
         // received control message
         socket.on('control', function(msgControl){
-            console.log(msgControl);
+            //DEBUG:console.log(msgControl);
             $('#control').append($('<li>').text(msgControl.control));
         });
 
@@ -113,15 +134,16 @@
 
         // user online message
         socket.on('users', function(users){
-            console.log(users);
+            //DEBUG:console.log(users);
             $('#online').empty();
             Object.keys(users).forEach(function (id) {
               if (users[id]) {
-                $('#online').append($('<li>').text(users[id].nick));
+                $('#online').append($('<li>')
+                  .text(users[id].nick + (users[id].typing=='YES'?' (está escribiendo)':'')));
               }
             });              
         });
-        
+                
         
       });        
     </script>   

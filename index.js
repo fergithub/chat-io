@@ -13,14 +13,11 @@ express.get('/style.css', function(req, res){
   res.sendFile(__dirname + '/style.css');
 });
 
-io.on('connection', function(socket){
+io.on('connection', function(socket) {
     console.log('a user connected');
-    // on connection -> greet everyone    
-    //socket.emit('control', {control: 'new ID'});  // response to socket emiter
-    //io.emit('control', {control: 'new user say: Hi!!'});  // emite to everyone
-    //socket.broadcast.emit('control', {control: 'New user connected'}); // emite to everyone except socket emiter
-
-    socket.on('nick selector', function(n){
+    
+    // on connection -> greet everyone        
+    socket.on('nick selector', function(n) {
       if (n) {
         var found = false;
         Object.keys(users).forEach(function (id) {
@@ -30,10 +27,10 @@ io.on('connection', function(socket){
           }
         });      
         if (!found) {
-          users[socket.id] = {nick: n};
+          users[socket.id] = {nick: n, typing: 'NO'};
           socket.broadcast.emit('control', {control: n + ' connected'}); // emite to everyone except socket emiter
-          io.emit('users', users); // emite to everyone except socket emiter
-          socket.emit('nick selector', 'OK');//{control: 'new ID'});  // response to socket emiter              
+          io.emit('users', users); // emite to everyone 
+          socket.emit('nick selector', 'OK'); // response to socket emiter              
         }
       }
       else {
@@ -41,18 +38,30 @@ io.on('connection', function(socket){
       }
     });
 
-    socket.on('chat message', function(msg){
+    socket.on('chat message', function(msg) {
       var nick = '';
-      if (users[socket.id])
+      if (users[socket.id]) {
         nick = users[socket.id].nick;
-      socket.broadcast.emit('chat message', nick + ': ' + msg);  // emite to everyone except socket emiter
-      //io.emit('chat message', msg);
+        if (users[socket.id].typing == 'YES') {
+          users[socket.id].typing = 'NO';
+          io.emit('users', users); // emite to everyone
+        }
+      }
+      socket.broadcast.emit('chat message', nick + ': ' + msg);  // emite to everyone except socket emiter      
     });
 
-    socket.on('disconnect', function(){      
+    socket.on('user typing', function(typing) {
+      if (users[socket.id]) {
+        if (users[socket.id].typing != typing) {
+          users[socket.id].typing = typing;
+          io.emit('users', users); // emite to everyone
+        }        
+      }                          
+    });
+
+    socket.on('disconnect', function() {      
       console.log('user disconnected');      
-      // on disconnection -> bye everyone    
-      //io.emit('control', {control: 'user say: Bye!!'});
+      // on disconnection -> bye everyone          
       if (users[socket.id]) {
         socket.broadcast.emit('control', {control: users[socket.id].nick + ' disconnected'}); // emite to everyone except socket emiter              
         delete users[socket.id];
